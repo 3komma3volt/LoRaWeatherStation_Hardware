@@ -1,0 +1,18 @@
+function Decoder(bytes, port) {
+  var temperature = bytes[0]<<24>>16 | bytes[1];
+  var humidity = (bytes[2] << 8) | bytes[3];
+  var pressure = ((bytes[4]) << 24) + ((bytes[5]) << 16) + ((bytes[6]) << 8) + ((bytes[7]));
+  var battery = (bytes[8] << 8) | bytes[9];
+  var unused = (bytes[10] << 8) | bytes[11];
+  var brightness = (bytes[12] << 8) | bytes[13];
+  var rain = bytes[14];
+  
+  return {
+    temperature: temperature / 100,
+    humidity: humidity,
+    pressure: pressure / 100,
+    battery: battery / 1000,
+    brightness: brightness,
+    rain: rain
+  }
+}

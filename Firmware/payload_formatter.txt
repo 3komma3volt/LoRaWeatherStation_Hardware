@@ -1,0 +1,26 @@
+function Decoder(bytes, port) {
+  var temperature = (bytes[0] << 8 | bytes[1]);
+  var humidity = (bytes[2] << 8 | bytes[3]);
+  var pressure = ((bytes[4]) << 24) + ((bytes[5]) << 16) + ((bytes[6]) << 8) + ((bytes[7]));
+  var battery = (bytes[8] << 8) | bytes[9];
+  var unused = (bytes[10] << 8) | bytes[11]; // formally used for battery percent calculation
+  var brightness = (bytes[12] << 8) | bytes[13];
+  var rain = bytes[14];
+  
+  var lux = brightness * 2.1504; // Datasheet: Gain 1/8, 25ms integration time
+  lux = Math.round(6.0135e-13 * Math.pow(lux, 4) - 9.3924e-9 * Math.pow(lux, 3) + 8.1488e-5 * Math.pow(lux, 2) + 1.0023 * lux);
+ 
+  var sensorSqure = 10.9 * 4.9; // for round rain sensors: sensorSqure = Math.PI * pow(sensorRadius, 2);
+  var tipsPer100ml = 100 / 1.5;
+  var mlPerTip = 100 / $tipsPer100ml;
+  var rainAmount = $mlPerTip / $sensorSqure;
+  
+  return {
+    temperature: temperature / 100,
+    humidity: humidity,
+    pressure: pressure / 100,
+    battery: battery / 1000,
+    brightness: lux,
+    rain: rainAmount
+  }
+}
