@@ -7,7 +7,7 @@
 #include "Seeed_BME280.h"
 #include "ttnparams.h"
 
-uint32_t appTxDutyCycle = 5 * 60000;  // the frequency of readings, in minutes * 60000
+uint32_t appTxDutyCycle = 10 * 60000;  // the frequency of readings, in minutes * 60000
 
 LoRaMacRegion_t loraWanRegion = ACTIVE_REGION;
 DeviceClass_t loraWanClass = LORAWAN_CLASS;
@@ -182,11 +182,16 @@ static void prepareTxFrame(uint8_t port) {
   Serial.print(batteryLevel);
   Serial.print(" %, Brightness: ");
   Serial.print(brightness);
+  #if ENABLE_RAINSENSOR == 1
   Serial.print(" lx, Rain: ");
   Serial.print(rain);
-  Serial.print(" cts, Winddir: ");
+Serial.print(" cts, ");
+  #endif
+  #if ENABLE_WINDDIRSENSOR == 1
+  Serial.print("Winddir: ");
   Serial.print(wind_direction, BIN);
   Serial.print(" dir ");
+  #endif
 
   Serial.print("\n");
 
